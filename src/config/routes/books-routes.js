@@ -1,51 +1,26 @@
 import { Router } from 'express';
+import GetBookController from '../../controllers/books/get-book-controller.js';
+import GetBookByIdController from '../../controllers/books/get-book-by-id-controller.js';
+import CreateBookController from '../../controllers/books/Create-book-controller.js';
+import UpdateBookController from '../../controllers/books/update-book-controller.js';
+import RemoveBookController from '../../controllers/books/remove-book-controller.js';
 
 const booksRoutes = Router();
-const books = [];
 
-booksRoutes.get('/', (req, res) => {
-  res.status(200).json(books);
-});
+const getBookController = new GetBookController();
+const getBookByIdController = new GetBookByIdController();
+const createBookController = new CreateBookController();
+const updateBookController = new UpdateBookController();
+const removeBookController = new RemoveBookController();
 
-booksRoutes.get('/:id', (req, res) => {
-  const {
-    params: { id },
-  } = req;
+booksRoutes.get('/', getBookController.handler);
 
-  const index = searchBook(id);
-  res.status(200).json(books[index]);
-});
+booksRoutes.get('/:id', getBookByIdController.handler);
 
-booksRoutes.post('/', (req, res) => {
-  const { body } = req;
+booksRoutes.post('/', createBookController.handler);
 
-  books.push(body);
-  res.status(201).json(body);
-});
+booksRoutes.put('/:id', updateBookController.handler);
 
-booksRoutes.put('/:id', (req, res) => {
-  const {
-    body: { title },
-    params: { id },
-  } = req;
-
-  const index = searchBook(id);
-  books[index].title = title;
-
-  res.status(200).json(books[index]);
-});
-
-booksRoutes.delete('/:id', (req, res) => {
-  const {
-    params: { id },
-  } = req;
-
-  const index = searchBook(id);
-  books.splice(index, 1);
-
-  res.json('Successfully removed book');
-});
-
-const searchBook = (id) => books.findIndex((book) => book.id === id);
+booksRoutes.delete('/:id', removeBookController.handler);
 
 export default booksRoutes;
