@@ -1,8 +1,11 @@
 import express from 'express';
+import router from './config/routes/routes.js';
 
 const app = express();
 
+app.use(express.json());
+app.use(router);
+
 app.get('/', (req, res) => res.status(200).send('Node Course'));
-app.get('/book', (req, res) => res.status(200).send('Books'));
 
 export default app;
